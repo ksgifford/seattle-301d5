@@ -85,7 +85,7 @@
     });
   };
 
-  // TODO: Refactor this to check if the database holds any records or not. If the DB is empty,
+  // TODO-DONE: Refactor this to check if the database holds any records or not. If the DB is empty,
   // we need to retrieve the JSON and process it.
   // If the DB has data already, we'll load up the data (sorted!), and then hand off control to the View.
   Article.fetchAll = function(next) {
@@ -93,24 +93,20 @@
       if (rows.length) {
         // Now instanitate those rows with the .loadAll function, and pass control to the view.
         Article.loadAll(rows);
-        // articleView.initIndexPage();
+        next();
       } else {
         $.getJSON('/data/hackerIpsum.json', function(rawData) {
           // Cache the json, so we don't need to request it next time:
           rawData.forEach(function(item) {
             var article = new Article(item); // Instantiate an article based on item from JSON
             // Cache the newly-instantiated article in DB:
-            article.insertRecord(rows);
-            // Article.all.push(article);
-
-
+            article.insertRecord();
           });
           // Now get ALL the records out the DB, with their database IDs:
           webDB.execute('SELECT * FROM Articles', function(rows) {
             // Now instanitate those rows with the .loadAll function, and pass control to the view.
-            return Article.loadAll(rows);
-            // articleView.initIndexPage();
-
+            Article.loadAll(rows);
+            next();
           });
         });
       }
