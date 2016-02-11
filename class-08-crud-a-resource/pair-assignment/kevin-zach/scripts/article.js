@@ -22,7 +22,14 @@
   // TODO-DONE: Set up a DB table for articles.
   Article.createTable = function(callback) {
     webDB.execute(
-      'CREATE TABLE Articles (title VARCHAR(50), category VARCHAR(50), author VARCHAR(50), authorUrl VARCHAR(255), publishedOn DATE, body);',
+      'CREATE TABLE IF NOT EXISTS Articles (' +
+      'id INTEGER PRIMARY KEY, ' +
+      'title VARCHAR(255) NOT NULL, ' +
+      'author VARCHAR(255) NOT NULL, ' +
+      'authorUrl VARCHAR(255), ' +
+      'category VARCHAR(50), ' +
+      'publishedOn DATETIME, '
+      'body TEXT NOT NULL);',
       function(result) {
         console.log('Successfully set up the articles table.', result);
         if (callback) callback();
@@ -44,7 +51,7 @@
     webDB.execute(
       [
         {
-          'sql': 'INSERT INTO Articles (title, author, authorUrl, category, publishedOn, body) VALUES (?, ?, ?, ?, ?, ?)',
+          'sql': 'INSERT INTO Articles (title, author, authorUrl, category, publishedOn, body) VALUES (?, ?, ?, ?, ?, ?);',
           'data': [this.title, this.author, this.authorUrl, this.category, this.publishedOn, this.body]
         }
       ],
@@ -57,7 +64,7 @@
     webDB.execute(
       [
         {
-          'sql': 'DELETE FROM Articles WHERE id = ?',
+          'sql': 'DELETE FROM Articles WHERE id = ?;',
           'data': [this.id]
         }
       ],
@@ -89,7 +96,7 @@
   // we need to retrieve the JSON and process it.
   // If the DB has data already, we'll load up the data (sorted!), and then hand off control to the View.
   Article.fetchAll = function(next) {
-    webDB.execute('SELECT * FROM Articles', function(rows) {
+    webDB.execute('SELECT * FROM Articles ORDER BY publishedOn DESC', function(rows) {
       if (rows.length) {
         // Now instanitate those rows with the .loadAll function, and pass control to the view.
         Article.loadAll(rows);
