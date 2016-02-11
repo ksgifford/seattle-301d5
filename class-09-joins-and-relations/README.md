@@ -1,10 +1,3 @@
-# Assignment for Class 9 - Joins and Data Relations
+# Assignment for Class 9
 
-Let's build on those SQL skills.
-
-## User Stories
- 1. As a developer, I want a normalized database, so that author info and article info is more flexible and consistent.
-
-## Technical Requirements and Grading Rubric
- - Continue to make good use of SMACSS principles.
- - Break
+In order to continue our focus on understanding the concepts discussed over the past week, we have omitted pair programming from today's assignments.  You will still be working on your portfolio and can review the requirements in the README of the corresponding portfolio-assignment directory.
