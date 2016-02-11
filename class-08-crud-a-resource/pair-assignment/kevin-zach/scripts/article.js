@@ -28,7 +28,7 @@
       'author VARCHAR(255) NOT NULL, ' +
       'authorUrl VARCHAR(255), ' +
       'category VARCHAR(50), ' +
-      'publishedOn DATETIME, '
+      'publishedOn DATETIME, ' +
       'body TEXT NOT NULL);',
       function(result) {
         console.log('Successfully set up the articles table.', result);
