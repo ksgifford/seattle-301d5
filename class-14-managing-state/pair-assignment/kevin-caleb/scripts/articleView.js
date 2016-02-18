@@ -13,6 +13,20 @@
   };
 
   // COMMENT: What does this method do?  What is it's execution path?
+  /*
+  This function runs the Handlebars compiler on the proto-HTML in the option template script. This popluates 2 options menus, 1 with authors and 1 with categories.
+
+  template is a variable that stores the compiled HTML data from Handlebars (though placeholders have not yet been filled in).
+
+  options is a variable that returns the compiled HTML for the authors options menu, with the author data filled in. The allAuthors method is used to map a list of unique author names with are passed to the template compiler. A jQuery append method is then used to append the authors to the options menu in the dom.
+
+  The allCategories method accomplishes the same thing, but populates the template with data pulled directly from the SQL database. (returns the data by calling 'template', maps the data, and appends it to the DOM)
+
+  For all we can tell, the if statement intended to filter out duplicates is unnecessary, since the allAuthors and allCategories methods already use reduce methods to remove duplicates. This appears to be a piece of redundant code.
+
+  populateFilters is called by articleView.index which is called by articlesController.index which is called in routes.js when a browser loads the specified URI.
+
+  */
   articleView.populateFilters = function() {
     var options,
       template = Handlebars.compile($('#option-template').text());
@@ -20,6 +34,7 @@
     // Example of using model method with FP, synchronous approach:
     // NB: This method is dependant on info being in the DOM. Only authors of shown articles are loaded.
     options = Article.allAuthors().map(function(author) { return template({val: author}); });
+    console.log(options);
     if ($('#author-filter option').length < 2) { // Prevent duplication
       $('#author-filter').append(options);
     };
@@ -34,10 +49,18 @@
           })
         );
       };
+      // ouch... http://callbackhell.com
     });
   };
 
   // COMMENT: What does this method do?  What is it's execution path?
+  /*
+  This function handles changes to selections in the options menu, such as when a user selects an author or category.
+  It sets the author or category that the user selected as the one shown in the default options view.
+  It constructs a URI path that substitues "author" or "category", and ends with the selected value, with any whitespace replaced by "+" symbols.
+  The resulting URI will trigger any associated functions in the routes.js file to handle the updates to the DOM. (e.g. if "resource" gets replaced with author, articlesController.loadByAuthor will be triggered by page js.)
+
+  */
   articleView.handleFilters = function() {
     $('#filters').one('change', 'select', function() {
       resource = this.id.replace('-filter', '');
@@ -118,6 +141,15 @@
   };
 
   // COMMENT: What does this method do?  What is it's execution path?
+
+  /*
+  The purpose of this function is to handle requests routed through routes.js to load any version of the articles page (filtered or unfiltered). Any such request will trigger a method on articlesController that uses articleView.index to return the data in the required scope, and then --via next() back in routes.js-- loads that data in the DOM.
+
+  The narrower purpose of this function is to show the "articles" section in the DOM and hide its siblings (in this case, the "about" section). Then it appends the data in whatever scope it receives it in.
+
+  It also serves to "reset" the page each time the user browses to a new view.
+  */
+
   articleView.index = function(articles) {
     $('#articles').show().siblings().hide();
 
@@ -128,8 +160,10 @@
 
     articleView.populateFilters();
     // COMMENT: What does this method do?  What is it's execution path?
+    /*
+    These are simply calling the functions to reset the options menu each time the user navigates to a new view of the site. For how they function, see comments above where these functions were created.
     articleView.handleFilters();
-
+    */
     // DONE: Replace setTeasers with just the truncation logic, if needed:
     if ($('#articles article').length > 1) {
       $('.article-body *:nth-of-type(n+2)').hide();
