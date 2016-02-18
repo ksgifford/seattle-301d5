@@ -11,13 +11,8 @@
       type: 'GET',
       headers: {'Authorization': 'token ' + gitHubToken},
       success: function(data, message, xhr) {
-        // console.log(data[0].description);
         repos.all = data;
         console.log(repos.all);
-          // console.log(data[0]);
-        // repos.all.push(data);
-        // console.log(repos.all);
-
       }
     }).done(callback);
   };
